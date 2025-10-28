@@ -1,2 +1,13 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+
+# Virtual environment
 .blog_venv
+
+# Environment variables file
 .env
+
+# Alembic cache
+alembic/__pycache__/
+alembic/versions/__pycache__/
