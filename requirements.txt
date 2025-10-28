@@ -1,0 +1,10 @@
+fastapi
+pydantic-settings
+pydantic[email]
+python-dotenv
+uvicorn
+sqlalchemy
+psycopg2-binary
+sqlalchemy[asyncio]
+asyncpg
+alembic
