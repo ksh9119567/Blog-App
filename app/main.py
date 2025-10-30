@@ -1,8 +1,9 @@
-# main.py
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-import models, database
-from routers import blog
+
+from app.models import models
+from app.db import database
+from app.api.router import api_router
 
 
 @asynccontextmanager
@@ -16,7 +17,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="FastAPI Blog", lifespan=lifespan)
 
 
-app.include_router(blog.router)
+app.include_router(api_router)
 
 @app.get("/")
 def root():

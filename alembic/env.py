@@ -1,4 +1,3 @@
-import models
 import os
 
 from logging.config import fileConfig
@@ -9,7 +8,9 @@ from alembic import context
 
 from dotenv import load_dotenv
 
-from database import Base
+from app.db.database import Base
+
+from app.models.models import *
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")

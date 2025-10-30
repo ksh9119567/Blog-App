@@ -1,18 +1,13 @@
-# routers/blog.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-import models, schemas, database
 from sqlalchemy.future import select
 
-router = APIRouter(prefix="/blog", tags=["Blogs"])
+from app.models import models
+from app.db.database import *
+from app.schemas import schemas
 
-# Dependency
-async def get_db():
-    db = database.AsyncSessionLocal()
-    try:
-        yield db
-    finally:
-        await db.close()
+router = APIRouter()
+
 
 @router.post("/", response_model=schemas.BlogResponse)
 async def create_blog(request: schemas.BlogCreate, db: AsyncSession = Depends(get_db)):
