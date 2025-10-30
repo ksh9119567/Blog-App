@@ -11,7 +11,8 @@ class BlogCreate(BlogBase):
 
 class BlogResponse(BlogBase):
     id: int
-
+    user_id: Optional[int]
+    
     class Config:
         from_attributes = True
 

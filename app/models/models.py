@@ -25,4 +25,4 @@ class Blog(Base):
     content = Column(Text, nullable=False)
     
     # relationship
-    creator = relationship("User", back_populates="blogs")
+    creator = relationship("User", back_populates="blogs", lazy="selectin")
