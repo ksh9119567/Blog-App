@@ -31,5 +31,5 @@ class UserResponse(UserBase):
     blogs: List[BlogResponse] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
  
