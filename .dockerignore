@@ -1,0 +1,30 @@
+# Byte-compiled / cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+.blog_venv/
+venv/
+env/
+
+# Environment file (we’ll mount via .env, not copy it)
+.env
+
+# Logs, local databases
+*.log
+*.sqlite3
+*.db
+
+# IDE and system files
+.vscode/
+.idea/
+.DS_Store
+
+# Git files
+.git
+.gitignore
+
+# Alembic caches
+alembic/__pycache__/
+alembic/versions/__pycache__/
