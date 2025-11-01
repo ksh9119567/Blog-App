@@ -1,0 +1,5 @@
+# Force Unix (LF) line endings for shell scripts
+*.sh text eol=lf
+
+# Optional: ensure Python files also stay LF
+*.py text eol=lf
