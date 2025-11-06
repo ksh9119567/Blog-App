@@ -16,6 +16,8 @@ class User(Base):
     # relationship
     blogs = relationship("Blog", back_populates="creator", cascade="all, delete-orphan", lazy="selectin")
     
+    def is_admin(self):
+        return self.role == "admin"
     
 class Blog(Base):
     __tablename__ = "blogs"

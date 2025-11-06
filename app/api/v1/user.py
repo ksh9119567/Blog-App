@@ -1,4 +1,3 @@
-# routers/user.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -12,7 +11,7 @@ from app.core.security import get_current_admin_user, get_current_user
 
 router = APIRouter()
 
-
+# POST API
 @router.post("/", response_model=schemas.UserResponse)
 async def create_user(request: schemas.UserCreate, db: AsyncSession= Depends(get_db)):
     # hash password before storing
@@ -24,14 +23,7 @@ async def create_user(request: schemas.UserCreate, db: AsyncSession= Depends(get
     return new_user
 
 
-@router.delete("/", response_model=schemas.UserResponse)
-async def delete_user(db: AsyncSession = Depends(get_db),
-                      current_user: models.User = Depends(get_current_user)):
-    await db.delete(current_user)
-    await db.commit()
-    return current_user
-
-
+# GET API
 @router.get("/all", response_model=list[schemas.UserResponse])
 async def get_all_users(db: AsyncSession = Depends(get_db), 
                         admin_user: models.User = Depends(get_current_admin_user)):
@@ -42,7 +34,51 @@ async def get_all_users(db: AsyncSession = Depends(get_db),
     return users
 
 
-@router.delete("/admin/{user_id}", response_model=schemas.UserResponse)
+# PUT API
+@router.put("/admin/{user_id}", response_model=schemas.UserResponse)
+async def update_user(user_id: int,
+                      request: schemas.UserCreate,
+                      db: AsyncSession = Depends(get_db),
+                      admin_user: models.User = Depends(get_current_admin_user)):
+    
+    result = await db.execute(select(models.User).filter(models.User.id ==user_id))
+    user = result.scalars().first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    hashed_pwd = bcrypt.hash(request.password)
+    user.username = request.username
+    user.email = request.email
+    user.password = hashed_pwd
+    await db.commit()
+    await db.refresh(user)
+    return user
+
+
+@router.put("/", response_model=schemas.UserResponse)
+async def update_current_user(request: schemas.UserCreate,
+                              db: AsyncSession = Depends(get_db),
+                              current_user: models.User = Depends(get_current_user)):
+    
+    hashed_pwd = bcrypt.hash(request.password)
+    current_user.username = request.username
+    current_user.email = request.email
+    current_user.password = hashed_pwd
+    await db.commit()
+    await db.refresh(current_user)
+    return current_user
+
+
+# DELETE API
+@router.delete("/")
+async def delete_user(db: AsyncSession = Depends(get_db),
+                      current_user: models.User = Depends(get_current_user)):
+    await db.delete(current_user)
+    await db.commit()
+    return "User deleted successfully"
+
+
+@router.delete("/admin/{user_id}")
 async def delete_specific_user(user_id: int,
                                db: AsyncSession = Depends(get_db),
                                admin_user: models.User = Depends(get_current_admin_user)):
@@ -54,16 +90,17 @@ async def delete_specific_user(user_id: int,
 
     await db.delete(user)
     await db.commit()
-    return user
+    return "User deleted successfully"
 
 
-@router.delete("/all", response_model=list[schemas.UserResponse])
+@router.delete("/all")
 async def delete_all_users(db: AsyncSession = Depends(get_db),
                            admin_user: models.User = Depends(get_current_admin_user)):
-    result = await db.execute(select(models.User))
+    result = await db.execute(select(models.User).filter(models.User.role != "admin"))
     users = result.scalars().all()
     if not users:
         raise HTTPException(status_code=404, detail="No users to delete")
-    await db.execute(delete(models.User))
+    
+    await db.execute(delete(models.User).filter(models.User.role != "admin"))
     await db.commit()
-    return users
+    return "Users deleted successfully"
