@@ -3,7 +3,7 @@
 # =========================
 
 # 1️⃣ Use a lightweight Python base image
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
