@@ -11,3 +11,5 @@ __pycache__/
 # Alembic cache
 alembic/__pycache__/
 alembic/versions/__pycache__/
+
+docs/roadmap.txt
